@@ -61,7 +61,7 @@ services:
       - JAVA_TOOL_OPTIONS=-Xms512m -Xmx1024m -javaagent:/opt/jmx/jmx_prometheus_javaagent-1.3.0.jar=9999:/opt/jmx/kafka-jmx.yml
       - KAFKA_CFG_JMX_PORT=9998
     volumes:
-      - ./volumes/kafka:/bitnami/kafka
+      - ./kafka:/bitnami/kafka
       - ./jmx/jmx_prometheus_javaagent-1.3.0.jar:/opt/jmx/jmx_prometheus_javaagent-1.3.0.jar
       - ./jmx/kafka-jmx.yml:/opt/jmx/kafka-jmx.yml
     networks:
@@ -95,7 +95,7 @@ services:
     ports:
       - "6379:6379"
     volumes:
-      - ./volumes/redis:/data
+      - ./redis:/data
     networks:
       - monitoring
 
@@ -111,7 +111,7 @@ services:
       - "9000:9000"   # S3 API
       - "9001:9001"   # MinIO Console
     volumes:
-      - ./volumes/minio:/data
+      - ./minio:/data
     networks:
       - monitoring
 
