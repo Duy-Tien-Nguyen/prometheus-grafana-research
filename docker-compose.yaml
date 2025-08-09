@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  api:
+    build: ./api
+    restart: always
+
+  nginx:
+    build: ./nginx
+    ports:
+      - "8080:80" # Truy cập Nginx từ máy thật qua cổng 8080
+    depends_on:
+      - api
+
+  nginx-exporter:
+    image: nginx/nginx-prometheus-exporter:0.11
+    command: ["-nginx.scrape-uri", "http://nginx/metrics"]
+    depends_on:
+      - nginx
+    restart: always
+
+  prometheus:
+    image: prom/prometheus:v2.37.0
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    ports:
+      - "9090:9090"
+    restart: always
+
+  grafana:
+    image: grafana/grafana:8.5.2
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning
+      - grafana_data:/var/lib/grafana
+    restart: always
+
+volumes:
+  prometheus_data: {}
+  grafana_data: {}
