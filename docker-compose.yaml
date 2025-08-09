@@ -18,6 +18,8 @@ services:
     depends_on:
       - nginx
     restart: always
+    networks:
+      - monitoring
 
   prometheus:
     image: prom/prometheus:v2.37.0
@@ -27,15 +29,18 @@ services:
     ports:
       - "9090:9090"
     restart: always
-
+    networks:
+      - monitoring
   grafana:
     image: grafana/grafana:12.0.4
     ports:
       - "3000:3000"
     volumes:
       - ./grafana/provisioning:/etc/grafana/provisioning
-      - grafana_data:/var/lib/grafana
+      - ./grafana_data:/var/lib/grafana
     restart: always
+    networks:
+      - monitoring
   kafka:
     image: bitnami/kafka:4.0.0
     container_name: kafka
@@ -71,7 +76,7 @@ services:
     image: provectuslabs/kafka-ui:latest
     container_name: kafka-ui
     ports:
-      - "8080:8080"
+      - "8081:8081"
     environment:
       - KAFKA_CLUSTERS_0_NAME=local
       - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka:9092
@@ -115,9 +120,21 @@ services:
     networks:
       - monitoring
 
+  redis_exporter:
+    image: oliver006/redis_exporter:v1.66.0
+    container_name: redis_exporter
+    ports:
+      - "9121:9121"
+    environment:
+      - REDIS_ADDR=redis:6379
+    networks:
+      - monitoring
+
+
 volumes:
   prometheus_data: {}
   grafana_data: {}
+  redis_exporter_data: {}
 
 networks:
   monitoring:
