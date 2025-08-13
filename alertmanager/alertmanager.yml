@@ -19,5 +19,5 @@ receivers:
       - to: duynt7141@ut.edu.vn
         send_resolved: true
         html: '{{ template "google.email.html" . }}'
-        headers:\
+        headers:
           Subject: '{{ template "google.email.subject" . }}'
