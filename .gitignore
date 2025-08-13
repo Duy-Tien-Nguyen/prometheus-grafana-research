@@ -1,3 +1,5 @@
+./redis
+./prometheus-grafana-research/redis
+./prometheus-grafana-research/minio
+
 .env
-
-
