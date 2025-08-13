@@ -1,5 +1,5 @@
 ./redis
-./prometheus-grafana-research/redis
-./prometheus-grafana-research/minio
+./kafka
+./minio
 
 .env
