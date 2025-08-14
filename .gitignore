@@ -1,5 +1,4 @@
 ./redis
-./kafka
+*/kafka/*
 ./minio
-
 .env

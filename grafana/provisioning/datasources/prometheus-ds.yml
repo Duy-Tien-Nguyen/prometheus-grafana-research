@@ -6,3 +6,6 @@ datasources:
     access: proxy
     url: http://prometheus:9090 # "prometheus" là tên service
     isDefault: true
+
+
+

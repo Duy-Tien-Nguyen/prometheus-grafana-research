@@ -2,6 +2,8 @@ services:
   api:
     build: ./api
     restart: always
+    networks:
+      - monitoring
 
   nginx:
     build: ./nginx
@@ -9,6 +11,8 @@ services:
       - "8080:80" # Truy cập Nginx từ máy thật qua cổng 8080
     depends_on:
       - api
+    networks:
+      - monitoring
 
   nginx-exporter:
     image: nginx/nginx-prometheus-exporter:1.4
@@ -34,15 +38,20 @@ services:
     image: grafana/grafana:12.0.4
     ports:
       - "3010:3000"
+    environment:
+      - GF_INSTALL_PLUGINS=redis-datasource
     volumes:
       - ./grafana/provisioning:/etc/grafana/provisioning
       - grafana_data:/var/lib/grafana
     restart: always
+    depends_on:
+      - redis
     networks:
       - monitoring
   kafka:
     image: bitnami/kafka:4.0.0
     container_name: kafka
+    user: "0:0"
     ports:
       - "9092:9092"    # cho container khác và host
       - "9999:9999"    # JMX Prometheus
@@ -75,7 +84,7 @@ services:
     image: provectuslabs/kafka-ui:latest
     container_name: kafka-ui
     ports:
-      - "8081:8081"
+      - "8082:8082"
     environment:
       - KAFKA_CLUSTERS_0_NAME=local
       - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka:9092
@@ -119,17 +128,6 @@ services:
     networks:
       - monitoring
 
-  redis_exporter:
-    image: oliver006/redis_exporter:v1.66.0
-    container_name: redis_exporter
-    ports:
-      - "9121:9121"
-    environment:
-      - REDIS_ADDR=redis:6379
-    networks:
-      - monitoring
-
-
   node-exporter:
     image: prom/node-exporter:v1.9.1
     container_name: node-exporter
@@ -146,6 +144,8 @@ services:
       - "9100:9100" # Expose cổng 9100 để Prometheus có thể scrape
     restart: always
     pid: host
+    networks:
+      - monitoring
 
   cadvisor:
     image: gcr.io/cadvisor/cadvisor:v0.52.1 
@@ -159,6 +159,8 @@ services:
       - /var/lib/docker/:/var/lib/docker:ro
       - /dev/disk/:/dev/disk:ro
     restart: always
+    networks:
+      - monitoring
 
   alertmanager:
     image: prom/alertmanager:v0.28.1
@@ -169,11 +171,11 @@ services:
     command:
       - '--config.file=/etc/alertmanager/alertmanager.yml'
       - '--storage.path=/data'
-    env_file:
-      - ./.env
     ports:
       - "9093:9093"
     restart: always
+    networks:
+      - monitoring
 
 volumes:
   alertmanager_data:

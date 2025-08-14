@@ -25,7 +25,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 6,
+  "id": 20,
   "links": [
     {
       "icon": "external link",
@@ -1021,7 +1021,7 @@
       },
       "gridPos": {
         "h": 15,
-        "w": 12,
+        "w": 6,
         "x": 0,
         "y": 11
       },
@@ -1193,8 +1193,8 @@
       },
       "gridPos": {
         "h": 15,
-        "w": 12,
-        "x": 12,
+        "w": 7,
+        "x": 6,
         "y": 11
       },
       "id": 41,
@@ -1246,6 +1246,143 @@
         }
       ],
       "type": "table"
+    },
+    {
+      "datasource": {
+        "uid": "$redis"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "color-text"
+            },
+            "filterable": false,
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Unique progressive identifier"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 205
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Timestamp"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 145
+              },
+              {
+                "id": "unit",
+                "value": "dateTimeFromNow"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Duration"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 92
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Command"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 1185
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 15,
+        "w": 11,
+        "x": 13,
+        "y": 11
+      },
+      "id": 11,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true,
+        "sortBy": []
+      },
+      "pluginVersion": "12.0.4",
+      "targets": [
+        {
+          "command": "slowlogGet",
+          "datasource": {
+            "uid": "$redis"
+          },
+          "query": "",
+          "refId": "A",
+          "type": "command"
+        }
+      ],
+      "title": "Slow queries log",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Id": true,
+              "Timestamp": false
+            },
+            "indexByName": {
+              "Command": 4,
+              "Duration": 3,
+              "Id": 0,
+              "Timestamp": 1,
+              "Timestamp * 1000": 2
+            },
+            "renameByName": {
+              "Duration": "",
+              "Id": "Id",
+              "Timestamp * 1000": "Timestamp"
+            }
+          }
+        }
+      ],
+      "type": "table"
     }
   ],
   "preload": false,
@@ -1258,8 +1395,8 @@
     "list": [
       {
         "current": {
-          "text": "",
-          "value": ""
+          "text": "redis-datasource",
+          "value": "ceuxeptiayr5sd"
         },
         "includeAll": false,
         "label": "Redis",
