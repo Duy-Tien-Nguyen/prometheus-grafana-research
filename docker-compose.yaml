@@ -51,34 +51,36 @@ services:
   kafka:
     image: bitnami/kafka:4.0.0
     container_name: kafka
-    user: "0:0"
     ports:
-      - "9092:9092"    # cho container khác và host
+      - "9092:9092"    # Cổng cho client trong Docker và host
+      - "29092:29092"  # Cổng cho client bên ngoài
       - "9999:9999"    # JMX Prometheus
     environment:
+      # Cấu hình cơ bản cho Kafka
       - KAFKA_BROKER_ID=1
       - KAFKA_CFG_PROCESS_ROLES=broker,controller
       - KAFKA_CFG_NODE_ID=1
-      # Listener cho cả trong Docker và host ngoài
-      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092,PLAINTEXT_HOST://:29092,CONTROLLER://:9093
-      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
-      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT,CONTROLLER:PLAINTEXT
+      # Cấu hình listener
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092,EXTERNAL://:29092,CONTROLLER://:9093
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092,EXTERNAL://localhost:29092
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=PLAINTEXT:PLAINTEXT,EXTERNAL:PLAINTEXT,CONTROLLER:PLAINTEXT
       - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=1@kafka:9093
       - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
       - ALLOW_PLAINTEXT_LISTENER=yes
       - KAFKA_KRAFT_CLUSTER_ID=GcZtMYVQSmS1GiII4Vui5g
       - KAFKA_CFG_NUM_PARTITIONS=3
       - KAFKA_CFG_DEFAULT_REPLICATION_FACTOR=1
-      # JMX Prometheus Agent
+      # JMX và Prometheus
+      - KAFKA_CFG_JMX_PORT=9998
       - KAFKA_JMX_OPTS=-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=9998 -Dcom.sun.management.jmxremote.rmi.port=9998 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Djava.rmi.server.hostname=kafka
       - JAVA_TOOL_OPTIONS=-Xms512m -Xmx1024m -javaagent:/opt/jmx/jmx_prometheus_javaagent-1.3.0.jar=9999:/opt/jmx/kafka-jmx.yml
-      - KAFKA_CFG_JMX_PORT=9998
     volumes:
       - ./kafka:/bitnami/kafka
       - ./jmx/jmx_prometheus_javaagent-1.3.0.jar:/opt/jmx/jmx_prometheus_javaagent-1.3.0.jar
       - ./jmx/kafka-jmx.yml:/opt/jmx/kafka-jmx.yml
     networks:
       - monitoring
+    restart: unless-stopped
 
   kafka-ui:
     image: provectuslabs/kafka-ui:latest
@@ -174,6 +176,20 @@ services:
     ports:
       - "9093:9093"
     restart: always
+    networks:
+      - monitoring
+
+  fastapi-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: fastapi-app
+    ports:
+      - "8009:8009"
+    depends_on:
+      - kafka
+      - minio
+      - redis
     networks:
       - monitoring
 

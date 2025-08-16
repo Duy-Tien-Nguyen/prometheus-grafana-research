@@ -1,4 +1,10 @@
-./redis
-./kafka
-./minio
+# Bỏ qua các file và thư mục của redis, kafka, minio
+./redis/
+./kafka/
+./minio/
+
+# Bỏ qua file môi trường
 .env
+
+# Bỏ qua thư mục môi trường ảo của Python
+.venv/
