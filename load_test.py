@@ -16,7 +16,7 @@ import os
 app = FastAPI()
 
 # Kafka config (PLAINTEXT)
-KAFKA_BOOTSTRAP_SERVERS = ['kafka:29092']
+KAFKA_BOOTSTRAP_SERVERS = ['kafka:9092']
 KAFKA_TOPIC_NAME = "test-topic"
 REPLICATION_FACTOR = 1
 

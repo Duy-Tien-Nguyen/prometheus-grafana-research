@@ -7,8 +7,8 @@ RUN pip install --no-cache-dir fastapi uvicorn[standard] kafka-python minio redi
 WORKDIR /app
 COPY load_test.py /app
 
-# # Mở port 8000
+# Mở port 8000
 # EXPOSE 8009
 
 # Chạy FastAPI bằng uvicorn
-CMD ["python", "load_test.py"]
+CMD ["sh", "-c", "sleep 300 && python load_test.py"]
