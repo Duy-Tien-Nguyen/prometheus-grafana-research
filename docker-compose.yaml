@@ -1,16 +1,16 @@
 services:
-  api:
-    build: ./api
-    restart: always
-    networks:
-      - monitoring
+  # api:
+    # build: ./api
+    # restart: always
+    # networks:
+    #   - monitoring
 
   nginx:
     build: ./nginx
     ports:
       - "8080:80" # Truy cập Nginx từ máy thật qua cổng 8080
     depends_on:
-      - api
+      - fastapi-app
     networks:
       - monitoring
 
@@ -51,6 +51,7 @@ services:
   kafka:
     image: bitnami/kafka:4.0.0
     container_name: kafka
+    user: root
     ports:
       - "9092:9092"    # Cổng cho client trong Docker và host
       - "29092:29092"  # Cổng cho client bên ngoài
@@ -197,8 +198,8 @@ volumes:
   alertmanager_data:
   prometheus_data:
   grafana_data:
-  redis_exporter_data: {}
+  redis_exporter_data:
 
 networks:
   monitoring:
-    external: true
+    driver: bridge

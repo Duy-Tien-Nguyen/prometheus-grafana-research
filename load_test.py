@@ -16,19 +16,19 @@ import os
 app = FastAPI()
 
 # Kafka config (PLAINTEXT)
-KAFKA_BOOTSTRAP_SERVERS = ['localhost:29092']
+KAFKA_BOOTSTRAP_SERVERS = ['kafka:29092']
 KAFKA_TOPIC_NAME = "test-topic"
 REPLICATION_FACTOR = 1
 
 # MinIO config
-MINIO_ENDPOINT = "localhost:9000"
+MINIO_ENDPOINT = "minio:9000"
 MINIO_ACCESS_KEY = "admin"
 MINIO_SECRET_KEY = "minio_pass"
 MINIO_BUCKET_NAME = "test-bucket"
 MINIO_SECURE = False
 
 # Redis config
-REDIS_HOST = "localhost"
+REDIS_HOST = "redis"
 REDIS_PORT = 6379
 REDIS_DB = 0
 

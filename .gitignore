@@ -1,7 +1,7 @@
 # Bỏ qua các file và thư mục của redis, kafka, minio
-./redis/
-./kafka/
-./minio/
+redis/
+kafka/
+minio/
 
 # Bỏ qua file môi trường
 .env
